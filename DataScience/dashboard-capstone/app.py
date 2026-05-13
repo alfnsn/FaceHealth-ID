@@ -5,20 +5,21 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import ast
+import os
 from collections import Counter
 import warnings
 warnings.filterwarnings('ignore')
 
 # PAGE CONFIG
 st.set_page_config(
-    page_title="Skincare Acne Intelligence",
+    page_title="Skincare Acne Dashboard",
     page_icon=None,
     layout="wide",
     initial_sidebar_state="expanded",
     menu_items=None
 )
 
-# CUSTOM CSS — diperbaiki: tidak ada wildcard yang bocor ke main area
+
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
@@ -308,7 +309,7 @@ st.markdown("""
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: #f0f7ff; }
     ::-webkit-scrollbar-thumb { background: #b8d9f0; border-radius: 3px; }
-    .block-container { padding-top: 24px !important; }
+    .block-container { padding-top: 60px !important; }
     div[data-testid="stHorizontalBlock"] { gap: 12px; }
 </style>
 """, unsafe_allow_html=True)
@@ -316,7 +317,8 @@ st.markdown("""
 # LOAD DATA
 @st.cache_data
 def load_data():
-    df = pd.read_csv("skincare_clean.csv")
+    import os
+    df = pd.read_csv(os.path.join(os.path.dirname(__file__), "skincare_clean.csv"))
     def parse_ing(x):
         try:
             return ast.literal_eval(x)
@@ -395,7 +397,7 @@ elif sens_sel == "Non-Sensitive":
     flt = flt[flt['Sensitivity'] == 'No']
 
 # HEADER
-st.markdown('<div class="dash-title">Skincare Acne Intelligence</div>', unsafe_allow_html=True)
+st.markdown('<div class="dash-title">Skincare Acne dashboard</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="dash-sub">Analisis Formulasi Bahan Aktif untuk Perawatan Acne &mdash; {len(flt):,} dari {len(df):,} profil</div>', unsafe_allow_html=True)
 
 if len(flt) == 0:
