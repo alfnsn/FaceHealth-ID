@@ -309,7 +309,7 @@ st.markdown("""
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: #f0f7ff; }
     ::-webkit-scrollbar-thumb { background: #b8d9f0; border-radius: 3px; }
-    .block-container { padding-top: 24px !important; }
+    .block-container { padding-top: 60px !important; }
     div[data-testid="stHorizontalBlock"] { gap: 12px; }
 </style>
 """, unsafe_allow_html=True)
