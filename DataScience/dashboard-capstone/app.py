@@ -10,7 +10,7 @@ from collections import Counter
 import warnings
 warnings.filterwarnings('ignore')
 
-# PAGE CONFIG
+## PAGE CONFIG
 st.set_page_config(
     page_title="Skincare Acne Intelligence",
     page_icon=None,
@@ -19,16 +19,13 @@ st.set_page_config(
     menu_items=None
 )
 
-# CUSTOM CSS — diperbaiki: tidak ada wildcard yang bocor ke main area
 st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
-    html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        color: #1e2d3d;
+    <style>
+    .block-container {
+        padding-top: 1rem;
     }
-    .stApp { background: #f0f7ff; color: #1e2d3d; }
+    </style>
+""", unsafe_allow_html=True)
 
     /* Override global dark theme input background */
     .stApp input, .stApp select, .stApp textarea {
