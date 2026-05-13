@@ -5,6 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import ast
+import os
 from collections import Counter
 import warnings
 warnings.filterwarnings('ignore')
@@ -316,7 +317,8 @@ st.markdown("""
 # LOAD DATA
 @st.cache_data
 def load_data():
-    df = pd.read_csv("skincare_clean.csv")
+    import os
+    df = pd.read_csv(os.path.join(os.path.dirname(__file__), "skincare_clean.csv"))
     def parse_ing(x):
         try:
             return ast.literal_eval(x)
