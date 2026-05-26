@@ -1,10 +1,6 @@
 AiEngineer/AcneDataset/
 AiEngineer/AcneDataset.zip
-AiEngineer/saved_models/custom_cnn_best.keras
-AiEngineer/saved_models/efficientnetb0_best.keras
-AiEngineer/saved_models/efficientnetb0_finetuned_best.keras
-AiEngineer/saved_models/resnet50_best.keras
-AiEngineer/saved_models/resnet50_finetuned_best.keras
+AiEngineer/saved_models/*.keras
 __pycache__/
 inference/__pycache__/
 
