@@ -1,16 +1,20 @@
 import sys
 import os
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from typing import Optional
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import uuid
 
 from inference.inference import predict_acne_image
 
+from services.skincare_service import get_skincare_recommendation
+
 app = FastAPI(
-    title="Acne Classification API",
-    description="API untuk klasifikasi jenis jerawat menggunakan ResNet50",
+    title="Acne Classification & Recommendation API",
+    description="API terintegrasi untuk mendeteksi jenis jerawat dan merekomendasikan skincare",
     version="1.0.0"
 )
 
@@ -25,49 +29,99 @@ app.add_middleware(
 TEMP_DIR = "temp_uploads"
 os.makedirs(TEMP_DIR, exist_ok=True)
 
-
 @app.get("/")
 def root():
-    return {"message": "Acne Classification API is running"}
-
+    return {"message": "Acne Classification & Skincare Recommendation API is running"}
 
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
 
-
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-    # Validasi ekstensi
-    allowed_extensions = {"jpg", "jpeg", "png"}
-    ext = file.filename.split(".")[-1].lower()
+async def predict_and_recommend(
+    # 2. File gambar sekarang jadi Opsional (File(None))
+    file: Optional[UploadFile] = File(None),
+    
+    # 3. Tambahan form baru untuk input manual dari Frontend
+    manual_acne_type: Optional[str] = Form(None),
+    
+    # Data profil tetap wajib
+    age_group: str = Form(...),
+    skin_type: str = Form(...),
+    skin_subtype: str = Form(...),
+    sensitivity: str = Form(...)
+):
+    if file is None and manual_acne_type is None:
+        raise HTTPException(status_code=400, detail="Anda harus mengunggah foto ATAU memilih jenis jerawat secara manual.")
 
-    if ext not in allowed_extensions:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Format file tidak didukung. Gunakan: {allowed_extensions}"
-        )
+    jenis_jerawat_tabular = ""
+    deteksi_gambar_asli = None
 
-    # Simpan file sementara
-    temp_filename = f"{uuid.uuid4()}.{ext}"
-    temp_path     = os.path.join(TEMP_DIR, temp_filename)
+    # SKENARIO A: User mengirim Gambar
+    if file is not None:
+        allowed_extensions = {"jpg", "jpeg", "png"}
+        ext = file.filename.split(".")[-1].lower()
+        if ext not in allowed_extensions:
+            raise HTTPException(status_code=400, detail="Format file tidak didukung.")
+
+        temp_filename = f"{uuid.uuid4()}.{ext}"
+        temp_path = os.path.join(TEMP_DIR, temp_filename)
+
+        try:
+            with open(temp_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+
+            # AI Gambar bekerja
+            image_result = predict_acne_image(temp_path)
+            
+            # --- SESUAIKAN DENGAN KEY JSON TEMAN ANDA DI SINI ---
+            jenis_jerawat_gambar = image_result["predicted_class"]
+            deteksi_gambar_asli = image_result
+            
+            # Proses Mapping (Penerjemah)
+            if jenis_jerawat_gambar in ['Blackheads', 'Whiteheads']:
+                jenis_jerawat_tabular = 'Comedonal'
+            elif jenis_jerawat_gambar in ['Papules', 'Pustules']:
+                jenis_jerawat_tabular = 'Inflammatory'
+            else:
+                jenis_jerawat_tabular = 'Cyst'
+        finally:
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+
+    # SKENARIO B: User mengisi form Manual (Tanpa Gambar)
+    else:
+        # Asumsinya, Frontend langsung mengirim nilai: 'Comedonal', 'Inflammatory', atau 'Cyst'
+        jenis_jerawat_tabular = manual_acne_type
+        deteksi_gambar_asli = "Input Manual oleh Pengguna"
 
     try:
-        with open(temp_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
+        data_pengguna = {
+            'Age_Group': age_group,
+            'Skin_Type': skin_type,
+            'Skin_Subtype': skin_subtype,
+            'Sensitivity': sensitivity,
+            'Internal_Type': jenis_jerawat_tabular
+        }
+        
+        hasil_rekomendasi = get_skincare_recommendation(data_pengguna)
 
-        # Prediksi
-        result = predict_acne_image(temp_path)
-
-        return result
-
+        return {
+            "status": "success",
+            "data": {
+                "sumber_deteksi": "AI Gambar" if file is not None else "Manual",
+                "deteksi_asli": deteksi_gambar_asli,
+                "kategori_tabular": jenis_jerawat_tabular,
+                "rekomendasi_skincare": hasil_rekomendasi
+            }
+        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Terjadi kesalahan di AI Rekomendasi: {str(e)}")
 
     finally:
-        # Hapus file temp
+        # Hapus file gambar temp agar server tidak penuh
         if os.path.exists(temp_path):
             os.remove(temp_path)
 
-# http://localhost:8000
-# uvicorn main:app --host 0.0.0.0 --port 8000
+# Untuk menjalankan server lokal:
+# uvicorn main:app --host 0.0.0.0 --port 8000 --reload
