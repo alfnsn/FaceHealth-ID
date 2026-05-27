@@ -71,14 +71,11 @@ async def predict_and_recommend(
             with open(temp_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
 
-            # AI Gambar bekerja
             image_result = predict_acne_image(temp_path)
             
-            # --- SESUAIKAN DENGAN KEY JSON TEMAN ANDA DI SINI ---
             jenis_jerawat_gambar = image_result["predicted_class"]
             deteksi_gambar_asli = image_result
             
-            # Proses Mapping (Penerjemah)
             if jenis_jerawat_gambar in ['Blackheads', 'Whiteheads']:
                 jenis_jerawat_tabular = 'Comedonal'
             elif jenis_jerawat_gambar in ['Papules', 'Pustules']:
@@ -91,7 +88,7 @@ async def predict_and_recommend(
 
     # SKENARIO B: User mengisi form Manual (Tanpa Gambar)
     else:
-        # Asumsinya, Frontend langsung mengirim nilai: 'Comedonal', 'Inflammatory', atau 'Cyst'
+        # Frontend langsung mengirim nilai: 'Comedonal', 'Inflammatory', atau 'Cyst'
         jenis_jerawat_tabular = manual_acne_type
         deteksi_gambar_asli = "Input Manual oleh Pengguna"
 
