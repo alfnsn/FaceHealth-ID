@@ -4,11 +4,15 @@ AiEngineer/saved_models/*.keras
 __pycache__/
 inference/__pycache__/
 
-FullstackDev/frontend/node_modules/
-FullstackDev/frontend/dist/
-FullstackDev/frontend/.env
-FullstackDev/frontend/dist-ssr/
+node_modules/
+dist/
+.env
+dist-ssr/
 FullstackDev/frontend/*.local
+build/
+.env
+.env.local
+.env.*.local
 
 .vscode/
 .DS_Store
