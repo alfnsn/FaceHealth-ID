@@ -1,6 +1,6 @@
 import sys
 import os
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
+# os.environ["TF_USE_LEGACY_KERAS"] = "1"
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from typing import Optional
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
@@ -40,7 +40,7 @@ def health_check():
 @app.post("/predict")
 async def predict_and_recommend(
     # 2. File gambar sekarang jadi Opsional (File(None))
-    file: Optional[UploadFile] = File(None),
+    file: UploadFile = File(None),
     
     # 3. Tambahan form baru untuk input manual dari Frontend
     manual_acne_type: Optional[str] = Form(None),
@@ -82,8 +82,15 @@ async def predict_and_recommend(
                 jenis_jerawat_tabular = 'Inflammatory'
             else:
                 jenis_jerawat_tabular = 'Cyst'
+        # finally:
+        #     if os.path.exists(temp_path):
+        #         os.remove(temp_path)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Terjadi kesalahan di AI Rekomendasi: {str(e)}")
+
         finally:
-            if os.path.exists(temp_path):
+            # Cek apakah variabel temp_path ada dan tidak bernilai None sebelum menghapus
+            if 'temp_path' in locals() and temp_path and os.path.exists(temp_path):
                 os.remove(temp_path)
 
     # SKENARIO B: User mengisi form Manual (Tanpa Gambar)
@@ -93,11 +100,12 @@ async def predict_and_recommend(
         deteksi_gambar_asli = "Input Manual oleh Pengguna"
 
     try:
+        sensitivity_clean = "Yes" if "not" not in sensitivity.lower() else "No"
         data_pengguna = {
             'Age_Group': age_group,
             'Skin_Type': skin_type,
             'Skin_Subtype': skin_subtype,
-            'Sensitivity': sensitivity,
+            'Sensitivity': sensitivity_clean,
             'Internal_Type': jenis_jerawat_tabular
         }
         
@@ -114,11 +122,6 @@ async def predict_and_recommend(
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Terjadi kesalahan di AI Rekomendasi: {str(e)}")
-
-    finally:
-        # Hapus file gambar temp agar server tidak penuh
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
-
+# # pip install fastapi uvicorn python-multipart tensorflow joblib numpy pillow
 # Untuk menjalankan server lokal:
-# uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+# uvicorn main:app --host 0.0.0.0 --port 8000

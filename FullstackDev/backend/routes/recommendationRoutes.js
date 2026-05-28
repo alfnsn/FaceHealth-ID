@@ -6,6 +6,6 @@ const {
 } = require("../controllers/recommendationController");
 
 const upload = multer({ storage: multer.memoryStorage() });
-router.post("/", upload.single("image" ), getRecommendation);
+router.post("/", upload.single("file" ), getRecommendation);
 
 module.exports = router;

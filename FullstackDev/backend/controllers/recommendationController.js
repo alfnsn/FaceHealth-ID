@@ -38,7 +38,7 @@ const getRecommendation = async (req, res) => {
 
     // endpoint FastAPI
     const airesponse = await axios.post(
-      "http://localhost:8000/predict",
+      "http://127.0.0.1:8000/predict",
       formDataToAI,
       {
         headers: {
@@ -53,8 +53,15 @@ const getRecommendation = async (req, res) => {
       data: airesponse.data.data,
     });     
     
+  // } catch (error) {
+  //   console.error("Error Recommendation Controller:", error.message);
   } catch (error) {
-    console.error("Error Recommendation Controller:", error.message);
+    // JIKA ADA RESPON ERROR DARI FASTAPI, TAMPILKAN DETAILNYA
+    if (error.response) {
+      console.error("Detail Error dari FastAPI:", error.response.data);
+    } else {
+      console.error("Error Recommendation Controller:", error.message);
+    }
 
     if (error.code === "ECONNREFUSED") {
       return res.status(503).json({
