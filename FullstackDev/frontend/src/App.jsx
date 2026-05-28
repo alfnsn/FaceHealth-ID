@@ -7,6 +7,7 @@ import ResultPage from './pages/analysis/ResultPage';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import AboutUs from './pages/AboutUs';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -17,17 +18,16 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/analyze" element={<AnalysisForm />} />
-            <Route path="/result" element={<ResultPage />} />
-
             <Route path="/about" element={<AboutUs />} />
-
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
+            <Route element={<ProtectedRoute />}>
+              <Route path="/analysis" element={<AnalysisForm />} />
+              <Route path="/result" element={<ResultPage />} />
+            </Route>
           </Routes>
         </main>
-
 
         <Footer />
       </div>

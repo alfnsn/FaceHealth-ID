@@ -1,38 +1,35 @@
 import { Link } from 'react-router-dom';
-import heroImage from '../../assets/hero.png';
+import bgImage from '../../assets/bg.jpg'
 
 const LandingPage = () => {
     return (
-        <div className="w-full bg-white pt-16 min-h-screen">
+        <div className="w-full bg-white pt-16 min-h-screen animate-page">
             {/* HERO SECTION */}
-            <div className="bg-gradient-to-b from-emerald-50 to-white">
-                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
-                                Solusi Cerdas untuk <br />
-                                <span className="text-emerald-600">Kulit Sehatmu.</span>
-                            </h1>
-                            <p className="mt-6 text-lg text-gray-600 leading-relaxed">
-                                Dapatkan rekomendasi skincare yang dipersonalisasi khusus untuk kondisi jerawat Anda. Menggunakan teknologi analisis cerdas untuk hasil yang akurat dan aman.
-                            </p>
-                            <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                                <Link
-                                    to="/analyze"
-                                    className="flex justify-center items-center px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold text-lg hover:bg-emerald-700 transform hover:-translate-y-1 transition-all shadow-xl shadow-emerald-200"
-                                >
-                                    Mulai Analisis Sekarang
-                                </Link>
-                            </div>
-                        </div>
-                        <div className="relative">
-                            <div className="absolute -z-10 top-0 left-0 w-72 h-72 bg-emerald-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-                            <div className="absolute -z-10 bottom-0 right-0 w-72 h-72 bg-teal-200 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
-                            <img
-                                src={heroImage}
-                                alt="Face Analysis Illustration"
-                                className="relative w-full h-auto drop-shadow-2xl rounded-3xl"
-                            />
+            <div 
+                className="relative bg-cover bg-center bg-no-repeat py-24 md:py-32 text-white"
+                style={{ backgroundImage: `url(${bgImage})` }}
+            >
+                {/* Overlay  */}
+                <div className="absolute inset-0 bg-slate-950/60 md:bg-gradient-to-r from-slate-950/85 to-slate-950/40 z-0"></div>
+
+                <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+                    <div className="max-w-2xl">
+                        <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">
+                            Solusi Cerdas untuk <br />
+                            <span className="text-emerald-400 bg-emerald-950/40 px-2 py-1 rounded-xl inline-block mt-2">
+                                Kulit Sehatmu.
+                            </span>
+                        </h1>
+                        <p className="mt-6 text-base md:text-lg text-slate-200 leading-relaxed font-medium">
+                            Dapatkan paket rekomendasi skincare yang dipersonalisasi khusus untuk kondisi jerawat Anda. Menggunakan teknologi analisis cerdas untuk hasil yang akurat, efektif, dan aman bagi skin barrier.
+                        </p>
+                        <div className="mt-10 flex flex-col sm:flex-row gap-4">
+                            <Link
+                                to="/analysis"
+                                className="flex justify-center items-center px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold text-lg hover:bg-emerald-500 transform hover:-translate-y-1 transition-all shadow-xl shadow-emerald-900/40 active:scale-[0.98]"
+                            >
+                                Mulai Analisis Sekarang
+                            </Link>
                         </div>
                     </div>
                 </section>

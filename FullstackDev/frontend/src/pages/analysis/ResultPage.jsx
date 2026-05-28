@@ -6,86 +6,100 @@ const ResultPage = () => {
 
     if (!recommendation) {
         return (
-            <div className="pt-32 text-center">
-                <p className="text-gray-600">Data analisis tidak ditemukan.</p>
-                <Link to="/analyze" className="text-emerald-600 font-bold underline">Kembali ke Form</Link>
+            <div className="pt-32 text-center min-h-screen bg-slate-50">
+                <div className="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-xl border border-slate-100">
+                    <p className="text-gray-600 mb-4 font-medium">Data analisis tidak ditemukan.</p>
+                    <Link to="/analysis" className="text-emerald-600 font-bold underline hover:text-emerald-700">
+                        Kembali ke Form Analisis
+                    </Link>
+                </div>
             </div>
         );
     }
 
+    const infoAI = recommendation;
+    const rekomendasiSkincare = infoAI.rekomendasi_skincare || "-";
+
+    const isMetodeGambar = infoAI.sumber_deteksi === "AI Gambar";
+    const detailKelasGambar = isMetodeGambar ? (infoAI.deteksi_asli?.predicted_class || "-") : "-";
+    const detailAkurasiGambar = isMetodeGambar && infoAI.deteksi_asli?.confidence 
+        ? `${(infoAI.deteksi_asli.confidence * 100).toFixed(1)}%` 
+        : "-";
+
     return (
-        <div className="pt-24 pb-20 min-h-screen bg-slate-50">
-            <div className="max-w-4xl mx-auto px-4">
-            
+        <div className="pt-28 pb-20 min-h-screen bg-slate-50 flex flex-col justify-center items-center animate-page">
+            <div className="max-w-6xl w-full px-6 flex-grow">
+                
+                {/* Header  */}
                 <div className="text-center mb-12">
-                    <h2 className="text-emerald-600 font-bold uppercase tracking-widest text-sm">Analysis Result</h2>
-                    <h1 className="mt-2 text-4xl font-extrabold text-gray-900">Rekomendasi SkinCare Anda</h1>
+                    <h2 className="text-emerald-600 font-bold uppercase tracking-widest text-sm">Hasil Analisis</h2>
+                    <h1 className="mt-2 text-4xl font-black text-gray-900 tracking-tight">Rekomendasi Skincare Anda</h1>
+                    <p className="text-gray-500 text-base mt-3 font-medium">
+                        Metode Penentuan: <span className="font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl text-sm">{infoAI.sumber_deteksi || "-"}</span>
+                    </p>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                  
-                    <div className="md:col-span-1 space-y-6">
-                        <div className="bg-white rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Profil Kulit</h3>
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-gray-500 text-sm">Tipe</span>
-                                    <span className="font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg text-xs">{recommendation.Skin_Type || "-"}</span>
+                    {/* Panel Kiri*/}
+                    <div className="lg:col-span-1 space-y-6">
+                        <div className="bg-white rounded-[24px] p-8 shadow-xl shadow-slate-200/60 border border-slate-100/80">
+                            <h3 className="text-xl font-extrabold text-gray-900 mb-6 border-b border-slate-100 pb-3">Profil Analisis</h3>
+                            
+                            <div className="space-y-5">
+                                <div className="flex flex-col space-y-1.5">
+                                    <span className="text-gray-400 text-xs font-bold uppercase tracking-wider">Kategori Jerawat </span>
+                                    <span className="font-bold text-emerald-800 bg-emerald-50 px-4 py-2.5 rounded-xl text-base inline-block">
+                                        {infoAI.kategori_tabular || "-"}
+                                    </span>
                                 </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-gray-500 text-sm">Masalah</span>
-                                    <span className="font-bold text-teal-700 bg-teal-50 px-3 py-1 rounded-lg text-xs">{recommendation.Concern || "-"}</span>
+                                
+                                <div className="flex flex-col space-y-1.5">
+                                    <span className="text-gray-400 text-xs font-bold uppercase tracking-wider">Prediksi jenis jerawat</span>
+                                    <span className="font-bold text-teal-800 bg-teal-50 px-4 py-2.5 rounded-xl text-base inline-block">
+                                        {detailKelasGambar}
+                                    </span>
                                 </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-gray-500 text-sm">Sensitivitas</span>
-                                    <span className="font-bold text-orange-700 bg-orange-50 px-3 py-1 rounded-lg text-xs">{recommendation.Sensitivity || "Normal"}</span>
+                                
+                                <div className="flex flex-col space-y-1.5">
+                                    <span className="text-gray-400 text-xs font-bold uppercase tracking-wider">Tingkat akurasi</span>
+                                    <span className="font-bold text-blue-800 bg-blue-50 px-4 py-2.5 rounded-xl text-base inline-block">
+                                        {detailAkurasiGambar}
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
-                        <Link to="/analyze" className="block text-center py-4 bg-white border-2 border-emerald-600 text-emerald-600 rounded-2xl font-bold hover:bg-emerald-50 transition-all">
+                        <Link 
+                            to="/analysis" 
+                            className="block text-center py-4 bg-white border-2 border-emerald-600 text-emerald-600 rounded-2xl font-black text-lg hover:bg-emerald-50 transition-all shadow-md shadow-emerald-100 active:scale-[0.99]"
+                        >
                             Analisis Ulang
                         </Link>
                     </div>
 
-                    {/* Rekomendasi  */}
-                    <div className="md:col-span-2 space-y-6">
-                        <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
-                            
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16"></div>
-                            
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6">Bahan Aktif yang Disarankan</h3>
-                            
-                            <div className="p-6 bg-emerald-600 rounded-2xl text-white shadow-lg shadow-emerald-200">
-                                <p className="text-emerald-100 text-sm mb-2 uppercase tracking-widest font-semibold">Kandungan skincare</p>
-                                <h4 className="text-3xl font-black">{recommendation.Ingredients || "Mencari data..."}</h4>
+                    {/* Panel Kanan */}
+                    <div className="lg:col-span-2">
+                        <div className="bg-white rounded-[24px] p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100/80 min-h-[300px] flex flex-col justify-between">
+                            <div className="space-y-6">
+                                <h3 className="text-2xl font-black text-gray-900 border-b border-slate-100 pb-4">Rekomendasi Skincare Terpilih</h3>
+                                
+                                <div className="p-8 bg-emerald-600 rounded-2xl text-white shadow-lg shadow-emerald-200/60">
+                                    <h4 className="text-2xl md:text-3xl font-black leading-relaxed whitespace-pre-line">
+                                        {rekomendasiSkincare}
+                                    </h4>
+                                </div>
                             </div>
 
-                            <div className="mt-8">
-                                <h4 className="font-bold text-gray-900 mb-3">Mengapa ini cocok untuk Anda?</h4>
-                                <p className="text-gray-600 leading-relaxed">
-                                    Berdasarkan tipe jerawat <span className="font-bold">{recommendation.Internal_Type || "anda"}</span>, 
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Impedit, porro distinctio? Alias nam quae, necessitatibus cum repudiandae aut illo sit incidunt ullam, temporibus accusamus aliquam, dolore saepe dolor ipsam quisquam.
+                            {/* note   */}
+                            <div className="bg-slate-50 border-l-4 border-slate-400 p-5 rounded-r-xl mt-8">
+                                <p className="text-xs text-gray-500 font-medium leading-relaxed">
+                                    Disclaimer: Selalu lakukan patch test sebelum beralih ke penggunaan menyeluruh.
                                 </p>
                             </div>
                         </div>
-
-                        {/* Info Tambahan */}
-                        <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-2xl">
-                            <div className="flex">
-                                <div className="flex-shrink-0">
-                                    <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                                    </svg>
-                                </div>
-                                <div className="ml-3">
-                                    <p className="text-sm text-blue-700 font-medium">
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem officiis, dolorum esse delectus tempore praesentium ab culpa non distinctio. Odio fugit pariatur esse debitis tempora aliquid, officiis provident facere quisquam.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+                     
                 </div>
             </div>
         </div>

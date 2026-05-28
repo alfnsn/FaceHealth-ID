@@ -1,14 +1,18 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AnalysisForm = () => {
+    // const userName = localStorage.getItem('userName') || 'User';
+    // const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         skinType: "",
+        skinSubtype: "",
         age: "",
         sensitivity: "Not Sensitive",
         detectedAcneType: "",
     });
-    const [setImage] = useState(null);
+    const [image, setImage] = useState(null);
     const [preview, setPreview] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -20,6 +24,7 @@ const AnalysisForm = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setError("");
     };
 
     const handleImageChange = (e) => {
@@ -27,13 +32,7 @@ const AnalysisForm = () => {
         if (file) {
             setImage(file);
             setPreview(URL.createObjectURL(file));
-            setInputMethod("ai");
-
-            setLoading(true);
-            setTimeout(() => {
-                setFormData((prev) => ({ ...prev, detectedAcneType: "Papules" }));
-                setLoading(false);
-            }, 1500);
+            setError("")
         }
     };
 
@@ -43,12 +42,38 @@ const AnalysisForm = () => {
             sensitivity: prev.sensitivity === "Sensitive" ? "Not Sensitive" : "Sensitive",
         }));
     };
+// masih dlaam tahap pengembangan nanti diperbaiki
+
+    // const handleNextStep = () => {
+    //     if (currentStep === 1) {
+    //         if (inputMethod === "manual" && !formData.detectedAcneType) {
+    //             setError("Silakan pilih kondisi masalah kulit Anda terlebih dahulu sebelum melanjutkan.");
+    //             return;
+    //         }
+    //         if (inputMethod === "ai" && !image) {
+    //             setError("Silakan unggah foto wajah Anda terlebih dahulu untuk dianalisis AI.");
+    //             return;
+    //         }
+    //     } else if (currentStep === 2) {
+    //         if (!formData.skinType || !formData.skinSubtype) {
+    //             setError("Silakan lengkapi tipe dan subtype kulit Anda untuk melanjutkan.");
+    //             return;
+    //         }
+    //     }
+    //     setError("");
+    //     setCurrentStep((prev) => prev + 1);
+    // };
+
+    // const handlePrevStep = () => {
+    //     setError("");
+    //     setCurrentStep((prev) => prev - 1);
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.detectedAcneType) {
-            setError("Silakan tentukan jenis masalah kulit melalui manual atau foto.");
+        if (!formData.age) {
+            setError("Silakan pilih rentang usia Anda.");
             return;
         }
 
@@ -57,49 +82,74 @@ const AnalysisForm = () => {
 
         try {
 
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            const submissionData = new FormData();
+            submissionData.append("skin_type", formData.skinType);
+            submissionData.append("skin_subtype", formData.skinSubtype);
+            submissionData.append("age_group", formData.age);
+            submissionData.append("sensitivity", formData.sensitivity);
+            submissionData.append("inputMethod", inputMethod);
+
+            // input manual 
+            if (inputMethod === "manual") {
+                let targetInternalType = "Cyst";
+                if (["Blackheads", "Whiteheads"].includes(formData.detectedAcneType)) {
+                    targetInternalType = "Comedonal";
+                } else if (["Papules", "Pustules"].includes(formData.detectedAcneType)) {
+                    targetInternalType = "Inflammatory";
+                }
+                submissionData.append("manual_acne_type", targetInternalType);
+            } else {
+                submissionData.append("file", image);
+            }
+
+            // mengirim ke backend 
+            const response = await axios.post("http://localhost:5001/api/recommendations", submissionData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
 
-            const dataResult = {
-                Skin_Type: formData.skinType || "Normal",
-                Concern: formData.detectedAcneType,
-                Sensitivity: formData.sensitivity,
-                Ingredients: getDummyIngredients(formData.detectedAcneType),
-                Internal_Type: formData.detectedAcneType
-            };
-
-            navigate("/result", { state: { recommendation: dataResult } });
+            if (response.data.success) {
+                navigate("/result", { state: { recommendation: response.data.data } });
+            } else {
+                setError(response.data.message || "Gagal memproses analisis rekomendasi.");
+            }
 
         } catch (err) {
-            setError("Gagal mendapatkan analisis. Silakan coba lagi.", err);
+            console.error("Error Submit Error:", err);
+            setError(err.response?.data?.message || "Gagal menghubungi server. Silakan coba lagi.");
         } finally {
             setLoading(false);
         }
     };
 
-    const getDummyIngredients = (type) => {
-        const ingredientsMap = {
-            "Blackheads": "Salicylic Acid (BHA) & Clay Mask",
-            "Whiteheads": "Benzoyl Peroxide & Glycolic Acid",
-            "Papules": "Niacinamide & Tea Tree Oil",
-            "Pustules": "Adapalene & Zinc PCA",
-            "Cyst": "Retinoid & Azelaic Acid"
-        };
-        return ingredientsMap[type] || "Gentle Cleanser & Moisturizer";
-    };
-
     return (
-        <div className="pt-24 pb-16 min-h-screen bg-slate-50">
-            <div className="max-w-2xl mx-auto px-4">
+        <div className="pt-28 pb-20 min-h-screen bg-slate-50 flex flex-col justify-center items-center animate-page">
+
+            <div className="max-w-6xl w-full px-6 flex flex-col justify-between flex-grow lg:my-8">
                 {/* Header Section */}
                 <div className="text-center mb-10">
-                    <h2 className="text-3xl font-bold text-gray-900">Analisis Kondisi Kulit</h2>
-                    <p className="mt-2 text-gray-600">Lengkapi data di bawah untuk rekomendasi skincare yang personal.</p>
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Analisis Kondisi Kulit Anda
+                    </h1>
+                    {/* <p className="mt-3 text-lg text-gray-500 font-medium">
+                        Langkah <span className="text-emerald-600 font-bold">{currentStep}</span> dari <span className="font-bold">3</span>: Analisis Kesehatan Kulit Wajah
+                    </p>
+
+                    <div className="w-full max-w-md bg-gray-200 h-3 rounded-full mx-auto mt-6 overflow-hidden shadow-inner">
+                        <div 
+                            className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full transition-all duration-500 ease-out"
+                            style={{ width: `${(currentStep / 3) * 100}%` }}
+                        />
+                    </div> */}
                 </div>
 
-                <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-8 md:p-10 border border-slate-100">
-                    <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="bg-white rounded-[32px] shadow-2xl shadow-slate-200/80 p-8 md:p-16 border border-slate-100/80 flex-grow flex flex-col justify-between min-h-[500px]">
+                    <form onSubmit={handleSubmit} className="space-y-10 h-full flex flex-col justify-between flex-grow">
 
+
+                        
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="flex flex-col space-y-2">
                                 <label className="text-sm font-semibold text-gray-700 ml-1">Tipe Kulit Utama</label>
@@ -133,6 +183,9 @@ const AnalysisForm = () => {
                                     <option value="Dry to Normal">Dry to Normal</option>
                                     <option value="Extreme Dry">Extreme Dry</option>
                                     <option value="Oily to Normal">Oily to Normal</option>
+                                    <option value="T-Zone Oily Cheeks Dry">T-Zone Oily Cheeks Dry</option>
+                                    <option value="T-Zone Dry Cheeks Oily">T-Zone Dry Cheeks Oily</option>
+                                    <option value="Extreme Oily">Extreme Oily</option>
                                 </select>
                             </div>
                         </div>
@@ -222,14 +275,7 @@ const AnalysisForm = () => {
                                         {preview ? (
                                             <div className="relative w-full h-48 overflow-hidden rounded-xl">
                                                 <img src={preview} alt="Preview" className="w-full h-full object-cover" />
-                                                {loading && (
-                                                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
-                                                        <div className="flex flex-col items-center">
-                                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600 mb-2"></div>
-                                                            <p className="text-xs font-bold text-emerald-700">AI Menganalisis...</p>
-                                                        </div>
-                                                    </div>
-                                                )}
+
                                             </div>
                                         ) : (
                                             <div className="text-center py-4">
@@ -240,11 +286,7 @@ const AnalysisForm = () => {
                                             </div>
                                         )}
                                     </div>
-                                    {formData.detectedAcneType && !loading && (
-                                        <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-100 flex justify-center">
-                                            <p className="text-sm text-emerald-700 font-medium">✨ AI Mendeteksi: <span className="font-bold underline">{formData.detectedAcneType}</span></p>
-                                        </div>
-                                    )}
+
                                 </div>
                             )}
                         </div>

@@ -27,11 +27,6 @@ const AboutUs = () => {
             path: "Learning Path C",
             image: hero
         },
-        {
-            name: "Anggota 6",
-            path: "Learning Path C",
-            image: hero
-        },
     ];
 
     return (
@@ -44,7 +39,7 @@ const AboutUs = () => {
                         Kelompok <span className="text-emerald-600">CC26-PSU048</span>
                     </h1>
                     <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-                        Beranggotakan 6 orang dengan learnign path Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores in doloremque excepturi iusto quos ab. Sunt velit itaque earum, ea iusto nesciunt vitae mollitia eum molestiae illo quo nobis suscipit!
+                        Beranggotakan 5 orang dengan learnign path Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores in doloremque excepturi iusto quos ab. Sunt velit itaque earum, ea iusto nesciunt vitae mollitia eum molestiae illo quo nobis suscipit!
                     </p>
                 </div>
 
