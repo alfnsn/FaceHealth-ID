@@ -6,7 +6,7 @@ const recommendationRoutes = require("./routes/recommendationRoutes");
 const userRoutes = require("./routes/userRoutes");
 
 dotenv.config();
-// connectDB();
+connectDB();
 
 const app = express();
 

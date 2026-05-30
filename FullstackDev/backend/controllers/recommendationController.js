@@ -1,4 +1,3 @@
-// const Treatment = require("../models/Treatment");
 const axios = require("axios");
 const FormData = require("form-data");
 
@@ -53,10 +52,9 @@ const getRecommendation = async (req, res) => {
       data: airesponse.data.data,
     });     
     
-  // } catch (error) {
-  //   console.error("Error Recommendation Controller:", error.message);
+  
   } catch (error) {
-    // JIKA ADA RESPON ERROR DARI FASTAPI, TAMPILKAN DETAILNYA
+    // menampilkan pesan error dari FastAPI
     if (error.response) {
       console.error("Detail Error dari FastAPI:", error.response.data);
     } else {
