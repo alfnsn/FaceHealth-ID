@@ -78,7 +78,7 @@ const ResultPage = () => {
                         </Link>
                     </div>
 
-                    {/* Panel Kanan */}
+                    {/* kanan */}
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-[24px] p-8 md:p-12 shadow-xl shadow-slate-200/60 border border-slate-100/80 min-h-[300px] flex flex-col justify-between">
                             <div className="space-y-6">
