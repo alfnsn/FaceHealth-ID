@@ -13,7 +13,7 @@ const app = express();
 // Routes
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://facehealth-id.vercel.app",
     credentials: true,
   }),
 );

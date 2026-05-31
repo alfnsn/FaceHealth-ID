@@ -27,7 +27,7 @@ const LandingPage = () => {
                     <div className="max-w-2xl">
                         <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">
                             Solusi Cerdas untuk <br />
-                            <span className="text-emerald-400 bg-emerald-950/40 px-3 py-1 rounded-xl inline-block mt-2 border border-emerald-500/20">
+                            <span className="text-emerald-400 bg-emerald-950/40 px-3 py-1 rounded-xl inline-block mt-2  ">
                                 Kulit Sehatmu.
                             </span>
                         </h1>

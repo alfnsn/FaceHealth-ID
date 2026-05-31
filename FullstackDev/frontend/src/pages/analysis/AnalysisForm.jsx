@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import guideImage from "../../assets/guideimage.jpg";
+import guideImage from "../../assets/guideImage.jpg";
 import { FiPlus, FiCheck } from "react-icons/fi";
 
 
@@ -26,13 +26,13 @@ const AnalysisForm = () => {
 
     const skinSubtypeOptions = [
         { value: "Normal to Dry", title: "Normal to Dry", desc: "Kondisi kulit seimbang namun cenderung mengarah ke kering di beberapa area wajah." },
-        { value: "Normal to Oily", title: "Normal to Oily", desc: "Kondisi kulit seimbang namun mulai memproduksi minyak sedikit lebih banyak." },
+        { value: "Normal to Oily", title: "Normal to Oily", desc: "Kondisi kulit seimbang namun terkadang memproduksi minyak sedikit lebih banyak." },
         { value: "Dry to Normal", title: "Dry to Normal", desc: "Kulit yang dominan kering namun terkadang terasa normal di area tertentu." },
-        { value: "Extreme Dry", title: "Extreme Dry", desc: "Kondisi kulit yang sangat kering parah, terasa kaku, gatal, hingga terjadi iritasi mengelupas." },
-        { value: "Oily to Normal", title: "Oily to Normal", desc: "Kulit yang dominan berminyak namun ada kalanya terasa seimbang atau normal." },
-        { value: "T-Zone Oily Cheeks Dry", title: "T-Zone Oily Cheeks Dry", desc: "Kombinasi klasik dengan dahi dan hidung berkilau minyak, sementara area pipi terasa sangat kering." },
-        { value: "T-Zone Dry Cheeks Oily", title: "T-Zone Dry Cheeks Oily", desc: "Kombinasi terbalik dengan area T-Zone yang kering namun pipi justru memproduksi minyak." },
-        { value: "Extreme Oily", title: "Extreme Oily", desc: "Produksi minyak yang sangat parah di seluruh bagian wajah seperti kilang minyak sepanjang hari." }
+        { value: "Extreme Dry", title: "Extreme Dry", desc: "Kondisi kulit yang sangat kering parah, terasa kaku, gatal, hingga terjadi iritasi seperti mengelupas." },
+        { value: "Oily to Normal", title: "Oily to Normal", desc: "Kulit yang dominan berminyak namun terkadang terasa seimbang atau normal." },
+        { value: "T-Zone Oily Cheeks Dry", title: "T-Zone Oily Cheeks Dry", desc: "Kombinasi dengan dahi dan hidung berkilau minyak, sementara area pipi terasa sangat kering." },
+        { value: "T-Zone Dry Cheeks Oily", title: "T-Zone Dry Cheeks Oily", desc: "Kombinasi terbalik dengan area T-Zone yang kering namun bagian pipi cenderung berminyak." },
+        { value: "Extreme Oily", title: "Extreme Oily", desc: "Produksi minyak berlebih di seluruh bagian wajah seperti mengkilap akibat minyak sepanjang hari." }
     ];
 
     const handleChange = (e) => {
@@ -125,7 +125,7 @@ const AnalysisForm = () => {
             }
 
             // mengirim ke backend 
-            const response = await axios.post("http://localhost:5001/api/recommendations", submissionData, {
+            const response = await axios.post("https://facehealth-backend.vercel.app/api/recommendations", submissionData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -179,7 +179,7 @@ const AnalysisForm = () => {
                                         Analisis masalah jerawat Anda dengan lebih akurat dengan teknologi AI
                                     </h2>
                                     <p className="text-gray-500 font-medium text-base">
-                                        Gunakan kamera perangkat Anda untuk memetakan kategori kondisi jerawat wajah secara otomatis dan presisi.
+                                        Gunakan kamera perangkat Anda untuk memetakan kategori kondisi jerawat wajah secara otomatis.
                                     </p>
                                 </div>
 
@@ -299,7 +299,7 @@ const AnalysisForm = () => {
                                 {/* Tipe Kulit Utama */}
                                 <div className="space-y-5">
                                     <h2 className="text-2xl md:text-3xl font-black text-gray-900 leading-tight">
-                                        2. Yang mana Tipe Kulit Anda?
+                                        Apa Tipe Kulit Utama Anda?
                                     </h2>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -317,7 +317,7 @@ const AnalysisForm = () => {
                                                     Berminyak
                                                 </span>
                                                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${formData.skinType === "Oily" ? "border-blue-600 bg-blue-600" : "border-blue-300 bg-white"}`}>
-                                                    {formData.skinType === "Normal" && <FiCheck className="text-xs text-white" />}
+                                                    {formData.skinType === "Oily" && <FiCheck className="text-xs text-white" />}
                                                 </div>
                                             </div>
                                             <p className="text-sm leading-relaxed font-bold text-gray-700">
@@ -338,7 +338,7 @@ const AnalysisForm = () => {
                                                     Kering
                                                 </span>
                                                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${formData.skinType === "Dry" ? "border-blue-600 bg-blue-600" : "border-blue-300 bg-white"}`}>
-                                                    {formData.skinType === "Normal" && <FiCheck className="text-xs text-white" />}
+                                                    {formData.skinType === "Dry" && <FiCheck className="text-xs text-white" />}
                                                 </div>
                                             </div>
                                             <p className="text-sm leading-relaxed font-bold text-gray-700">
@@ -359,7 +359,7 @@ const AnalysisForm = () => {
                                                     Kombinasi
                                                 </span>
                                                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${formData.skinType === "Combination" ? "border-blue-600 bg-blue-600" : "border-blue-300 bg-white"}`}>
-                                                    {formData.skinType === "Normal" && <FiCheck className="text-xs text-white" />}
+                                                    {formData.skinType === "Combination" && <FiCheck className="text-xs text-white" />}
                                                 </div>
                                             </div>
                                             <p className="text-sm leading-relaxed font-bold text-gray-700">

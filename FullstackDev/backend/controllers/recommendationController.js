@@ -37,11 +37,11 @@ const getRecommendation = async (req, res) => {
 
     // endpoint FastAPI
     const airesponse = await axios.post(
-      "http://127.0.0.1:8000/predict",
+      "https://raihanrill-facehealth-api.hf.space/predict",
       formDataToAI,
       {
         headers: {
-          ...formDataToAI.getHeaders(),
+         "Content-Type": formDataToAI.getHeaders()["content-type"],
         },
       },
     );

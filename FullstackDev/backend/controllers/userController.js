@@ -18,23 +18,7 @@ const registerUser = async (req, res) => {
       });
     }
 
-    let userExists = null;
-    try {
-      userExists = await User.findOne({ email });
-    } catch (dbErr) {
-      console.warn("Database tidak terhubung. Mengaktifkan mode bypass untuk Register.");
-
-      return res.status(201).json({
-        success: true,
-        message: "Akun Anda berhasil didaftarkan (Mode Tamu Offline)!",
-        data: {
-          _id: "dummy_id_" + Math.random().toString(36).substr(2, 9),
-          name: name,
-          email: email,
-        },
-      });
-    }
-
+    const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
         success: false,
@@ -42,11 +26,10 @@ const registerUser = async (req, res) => {
       });
     }
 
-    // Enkripsi password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Menyimpan data ke database
+    // simpan data user baru
     const userBaru = await User.create({
       name,
       email,
@@ -73,13 +56,13 @@ const registerUser = async (req, res) => {
     console.error("Register Controller Error:", error.message);
     return res.status(500).json({
       success: false,
-      message: "Terjadi gangguan internal server saat mendaftarkan akun.",
+      message: "Terjadi gangguan pada server saat mendaftarkan akun. Silakan coba lagi.",
     });
   }
 };
 
 /**
- * @desc    Masuk ke Sistem (Login) + Auto Bypass jika DB Offline
+ * @desc    Masuk ke Sistem (Login)
  * @route   POST /api/users/login
  * @access  Public
  */
@@ -94,24 +77,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-    let user = null;
-    try {
-      user = await User.findOne({ email });
-    } catch (dbErr) {
-      console.warn("Database offline. Mengaktifkan sistem bypass otomatis untuk penguji.");
-      
-      return res.json({
-        success: true,
-        message: "Berhasil masuk ke sistem bypass (Mode Tamu)!",
-        token: "kunci_token_akses_tiruan_capstone_2026",
-        user: {
-          _id: "dummy_id_123",
-          name: "User Percobaan",
-          email: email,
-        },
-      });
-    }
-
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -127,7 +93,7 @@ const loginUser = async (req, res) => {
       });
     }
 
-        const rahasiaJWT = process.env.JWT_SECRET || "kunci_rahasia_facehealth_id_2026";
+    const rahasiaJWT = process.env.JWT_SECRET || "kunci_rahasia_facehealth_id_2026";
     const token = jwt.sign(
       { id: user._id, email: user.email },
       rahasiaJWT,
@@ -148,7 +114,7 @@ const loginUser = async (req, res) => {
     console.error("Login Controller Error:", error.message);
     return res.status(500).json({
       success: false,
-      message: "Terjadi gangguan internal server saat proses login.",
+      message: "Terjadi gangguan pada server saat proses login. Silakan coba lagi.",
     });
   }
 };

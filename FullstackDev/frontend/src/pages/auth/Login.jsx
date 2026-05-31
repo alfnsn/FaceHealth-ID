@@ -15,7 +15,7 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await axios.post("http://localhost:5001/api/users/login", {
+            const response = await axios.post("https://facehealth-backend.vercel.app/api/users/login", {
                 email,
                 password
             });

@@ -10,15 +10,15 @@ const AboutUs = () => {
             bgIcon: "bg-purple-50 border-purple-200"
         },
         {
-            name: "Anggota 2",
-            path: "Muhammad Raihan",
+            name: "Muhammad Raihan",
+            path: "AI Engineer",
             icon: <FiCpu className="w-16 h-16 text-purple-650" />,
             bgBadge: "bg-purple-50 text-purple-700 border-purple-100",
             bgIcon: "bg-purple-50 border-purple-200"
         },
         {
-            name: "Anggota 3",
-            path: "Muhammad Rifqy Azhar Widiyatmoko",
+            name: "Muhammad Rifqy Azhar Widiyatmoko",
+            path: "Data Science",
             icon: <FiBarChart2 className="w-16 h-16 text-blue-650" />,
             bgBadge: "bg-blue-50 text-blue-700 border-blue-100",
             bgIcon: "bg-blue-50 border-blue-200"
@@ -32,7 +32,7 @@ const AboutUs = () => {
         },
         {
             name: "Shinta Feronica Florence",
-            path: "Full-stack Developer",
+            path: "Full-stack Web Developer",
             icon: <FiCode className="w-16 h-16 text-emerald-650" />,
             bgBadge: "bg-emerald-50 text-emerald-700 border-emerald-100",
             bgIcon: "bg-emerald-50 border-emerald-200"

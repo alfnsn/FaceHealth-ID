@@ -19,7 +19,6 @@ const Register = () => {
         setError('');
         setSuccess('');
 
-
         if (password !== confirmPassword) {
             setError('Konfirmasi password tidak cocok dengan password utama.');
             setLoading(false);
@@ -27,15 +26,17 @@ const Register = () => {
         }
 
         try {
-            const response = await axios.post("http://localhost:5001/api/users/register", {
+            const response = await axios.post("https://facehealth-backend.vercel.app/api/users/register", {
                 name,
                 email,
                 password
             });
 
-            if (response.data.success || response.status === 201) {
+            if (response && response.data && response.data.success) {
                 setSuccess('Akun berhasil dibuat! Mengalihkan ke halaman login...');
-                localStorage.setItem('userName', response.data.user.name);
+
+                const savedName = response.data.user?.name || response.data.data?.name || name;
+                localStorage.setItem('userName', savedName);
 
                 setName('');
                 setEmail('');
@@ -45,10 +46,12 @@ const Register = () => {
                 setTimeout(() => {
                     navigate('/login');
                 }, 2000);
+            } else {
+                setError('Gagal mendaftarkan akun. Data yang dikirim tidak valid.');
             }
         } catch (err) {
             console.error("Register Error:", err);
-            setError(err.response?.data?.message || "Gagal mendaftarkan akun. Silakan coba kembali.");
+            setError(err.response?.data?.message || "Gagal mendaftarkan akun. Terjadi gangguan jaringan (CORS) atau server sedang diperbarui.");
         } finally {
             setLoading(false);
         }
@@ -66,14 +69,14 @@ const Register = () => {
                     {/* Alert Box Error */}
                     {error && (
                         <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs rounded-r-xl font-medium">
-                             {error}
+                            {error}
                         </div>
                     )}
 
                     {/* Alert Box Sukses */}
                     {success && (
                         <div className="p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 text-xs rounded-r-xl font-medium">
-                             {success}
+                            {success}
                         </div>
                     )}
 
@@ -108,7 +111,7 @@ const Register = () => {
                         <input
                             type="password"
                             required
-                            minLength={6} 
+                            minLength={6}
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all bg-gray-50 text-gray-700"
                             placeholder="••••••••"
                             value={password}

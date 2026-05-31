@@ -5,7 +5,13 @@ const {
   getRecommendation,
 } = require("../controllers/recommendationController");
 
-const upload = multer({ storage: multer.memoryStorage() });
+const storage = multer.memoryStorage();
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 
+  }
+});
 router.post("/", upload.single("file" ), getRecommendation);
 
 module.exports = router;
