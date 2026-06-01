@@ -10,6 +10,9 @@ export default {
         'medical-blue': '#0ea5e9',
         'medical-teal': '#14b8a6',
       },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
     },
   },
   plugins: [],

@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { 
+    FiUser, 
+    FiMail, 
+    FiLock, 
+    FiUserPlus, 
+    FiAlertCircle, 
+    FiCheckCircle,
+    FiLoader
+} from 'react-icons/fi';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -59,93 +68,138 @@ const Register = () => {
 
     return (
         <div className="pt-24 pb-16 min-h-screen bg-slate-50 flex items-center justify-center px-4 animate-page">
-            <div className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-8 md:p-10 border border-slate-100">
-                <div className="text-center mb-10">
-                    <h2 className="text-3xl font-bold text-gray-900">Daftar Akun</h2>
-                    <p className="mt-2 text-gray-600 font-medium">Buat akun FaceHealth ID untuk memantau perkembangan kulitmu</p>
+            <div className="max-w-md w-full bg-white rounded-[32px] shadow-2xl shadow-slate-200/50 p-8 md:p-10 border border-slate-100/80">
+                
+                {/* Header */}
+                <div className="text-center mb-9">
+                    <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Daftar Akun</h2>
+                    <p className="mt-3 text-sm text-gray-500 font-medium leading-relaxed px-2">
+                        Buat akun FaceHealth ID untuk memantau perkembangan dan kesehatan kulitmu
+                    </p>
                 </div>
 
                 <form onSubmit={handleRegister} className="space-y-5">
                     {/* Alert Box Error */}
                     {error && (
-                        <div className="p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs rounded-r-xl font-medium">
-                            {error}
+                        <div className="p-4 bg-rose-50 border-l-4 border-rose-500 text-rose-800 text-sm rounded-r-xl font-medium shadow-sm transition-all animate-fadeIn flex items-start gap-2.5">
+                            <FiAlertCircle className="text-base text-rose-500 flex-shrink-0 mt-0.5" />
+                            <span>{error}</span>
                         </div>
                     )}
 
                     {/* Alert Box Sukses */}
                     {success && (
-                        <div className="p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 text-xs rounded-r-xl font-medium">
-                            {success}
+                        <div className="p-4 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 text-sm rounded-r-xl font-medium shadow-sm transition-all animate-fadeIn flex items-start gap-2.5">
+                            <FiCheckCircle className="text-base text-emerald-500 flex-shrink-0 mt-0.5" />
+                            <span>{success}</span>
                         </div>
                     )}
 
-                    <div className="space-y-1">
-                        <label className="text-sm font-semibold text-gray-700 ml-1">Nama Lengkap</label>
-                        <input
-                            type="text"
-                            required
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all bg-gray-50 text-gray-700"
-                            placeholder="Nama Anda"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            disabled={loading}
-                        />
+                    {/* Input Nama */}
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-semibold text-slate-700 ml-1">Nama Lengkap</label>
+                        <div className="relative flex items-center group">
+                            <div className="absolute left-4 text-slate-400 transition-colors group-focus-within:text-emerald-500">
+                                <FiUser className="text-base" />
+                            </div>
+                            <input
+                                type="text"
+                                required
+                                className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all bg-slate-50/50 text-sm font-medium text-slate-700"
+                                placeholder="Nama Lengkap Anda"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                disabled={loading}
+                            />
+                        </div>
                     </div>
 
-                    <div className="space-y-1">
-                        <label className="text-sm font-semibold text-gray-700 ml-1">Email</label>
-                        <input
-                            type="email"
-                            required
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all bg-gray-50 text-gray-700"
-                            placeholder="nama@email.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            disabled={loading}
-                        />
+                    {/* Input Email */}
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-semibold text-slate-700 ml-1">Email</label>
+                        <div className="relative flex items-center group">
+                            <div className="absolute left-4 text-slate-400 transition-colors group-focus-within:text-emerald-500">
+                                <FiMail className="text-base" />
+                            </div>
+                            <input
+                                type="type"
+                                required
+                                className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all bg-slate-50/50 text-sm font-medium text-slate-700"
+                                placeholder="nama@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                disabled={loading}
+                            />
+                        </div>
                     </div>
 
-                    <div className="space-y-1">
-                        <label className="text-sm font-semibold text-gray-700 ml-1">Password</label>
-                        <input
-                            type="password"
-                            required
-                            minLength={6}
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all bg-gray-50 text-gray-700"
-                            placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            disabled={loading}
-                        />
+                    {/* Input Password */}
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-semibold text-slate-700 ml-1">Password</label>
+                        <div className="relative flex items-center group">
+                            <div className="absolute left-4 text-slate-400 transition-colors group-focus-within:text-emerald-500">
+                                <FiLock className="text-base" />
+                            </div>
+                            <input
+                                type="password"
+                                required
+                                minLength={6}
+                                className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all bg-slate-50/50 text-sm font-medium text-slate-700"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                disabled={loading}
+                            />
+                        </div>
                     </div>
 
-                    <div className="space-y-1">
-                        <label className="text-sm font-semibold text-gray-700 ml-1">Konfirmasi Password</label>
-                        <input
-                            type="password"
-                            required
-                            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 outline-none transition-all bg-gray-50 text-gray-700"
-                            placeholder="••••••••"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            disabled={loading}
-                        />
+                    {/* Input Konfirmasi Password */}
+                    <div className="space-y-1.5">
+                        <label className="text-sm font-semibold text-slate-700 ml-1">Konfirmasi Password</label>
+                        <div className="relative flex items-center group">
+                            <div className="absolute left-4 text-slate-400 transition-colors group-focus-within:text-emerald-500">
+                                <FiLock className="text-base" />
+                            </div>
+                            <input
+                                type="password"
+                                required
+                                className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all bg-slate-50/50 text-sm font-medium text-slate-700"
+                                placeholder="••••••••"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                disabled={loading}
+                            />
+                        </div>
                     </div>
 
+                    {/* Tombol Submit */}
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`w-full py-4 text-white rounded-2xl font-bold text-lg transition-all shadow-lg active:scale-[0.98] ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-100'
-                            }`}
+                        className={`w-full flex items-center justify-center gap-2 py-3.5 text-white rounded-xl font-semibold text-sm transition-all shadow-lg active:scale-[0.98] ${
+                            loading 
+                                ? 'bg-slate-300 cursor-not-allowed text-slate-500 shadow-none' 
+                                : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-100'
+                        }`}
                     >
-                        {loading ? 'Mendaftarkan Akun...' : 'Daftar Sekarang'}
+                        {loading ? (
+                            <>
+                                <FiLoader className="animate-spin text-base" />
+                                <span>Mendaftarkan Akun...</span>
+                            </>
+                        ) : (
+                            <>
+                                <FiUserPlus className="text-base" />
+                                <span>Daftar Sekarang</span>
+                            </>
+                        )}
                     </button>
                 </form>
 
-                <p className="mt-8 text-center text-gray-600">
+                {/* Footer Link */}
+                <p className="mt-8 text-center text-sm text-gray-500 font-normal">
                     Sudah punya akun?{' '}
-                    <Link to="/login" className="text-emerald-600 font-bold hover:underline">
+                    <Link to="/login" className="text-emerald-600 font-semibold hover:underline underline-offset-2 ml-0.5">
                         Masuk di sini
                     </Link>
                 </p>

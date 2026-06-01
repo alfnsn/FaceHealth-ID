@@ -5,12 +5,14 @@ const connectDB = require("./config/db");
 const recommendationRoutes = require("./routes/recommendationRoutes");
 const userRoutes = require("./routes/userRoutes");
 
-dotenv.config();
-connectDB();
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
+dotenv.config();
 const app = express();
 
-// Routes
+connectDB();
+
 app.use(
   cors({
     origin: "https://facehealth-id.vercel.app",
@@ -23,6 +25,17 @@ app.use((req, res, next) => {
   console.log(`${req.method} request ke: ${req.url}`);
   next();
 });
+
+const swaggerOptions = {
+  customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+  customJs: [
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js'
+  ]
+};
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
+
 
 app.use("/api/users", userRoutes);
 app.use("/api/recommendations", recommendationRoutes);

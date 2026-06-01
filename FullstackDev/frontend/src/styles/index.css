@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,10 +11,10 @@
   --accent: #059669; 
   --border-color: #e2e8f0;
   
-  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   
   font-family: var(--sans);
-  font-size: 18px;
+  font-size: 16px; 
   line-height: 1.5;
   color: var(--text-main);
   background-color: var(--bg-primary);
@@ -22,12 +24,15 @@
 
 html, 
 body {
+  font-family: var(--sans); 
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100vh;
   background-color: var(--bg-primary);
   color-scheme: light; 
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -46,32 +51,23 @@ h1, h2, h3 {
   line-height: 1.2;
 }
 
-.container-custom {
-  width: 100%;
-  max-width: 1280px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.5s ease-out forwards;
-}
-
 @layer components {
+  .container-custom {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
   .input-modern {
     @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all bg-gray-50 text-gray-700 appearance-none cursor-pointer;
   }
 }
 
 @layer utilities {
-  @keyframes fadeIn {
+  @keyframes simpleFadeIn {
     from {
       opacity: 0;
       transform: translateY(8px); 
@@ -82,7 +78,11 @@ h1, h2, h3 {
     }
   }
 
+  .animate-fadeIn {
+    animation: simpleFadeIn 0.5s ease-out forwards;
+  }
+
   .animate-page {
-    animation: fadeIn 0.4s ease-out forwards;
+    animation: simpleFadeIn 0.4s ease-out forwards;
   }
 }
