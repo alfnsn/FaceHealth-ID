@@ -474,5 +474,3 @@ Proyek ini dikembangkan oleh tim capstone yang terdiri dari tiga peran:
 | **Fullstack Developer** | Aplikasi web React, backend Express.js, deployment |
 
 ---
-
-> **Disclaimer:** Model AI dalam proyek ini tidak menggunakan TensorFlow Hub, AutoML, atau layanan API model eksternal. Semua model dibangun dan dilatih secara mandiri menggunakan TensorFlow/Keras dengan dataset yang dikurasi khusus.
