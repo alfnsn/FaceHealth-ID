@@ -1,5 +1,7 @@
 const axios = require("axios");
 const FormData = require("form-data");
+const jwt = require("jsonwebtoken");
+const History = require("../models/History");
 
 const getRecommendation = async (req, res) => {
   try {
@@ -7,6 +9,7 @@ const getRecommendation = async (req, res) => {
       skin_type,
       skin_subtype,
       age_group,
+      ageRaw,
       sensitivity,
       inputMethod,
       manual_acne_type,
@@ -14,13 +17,15 @@ const getRecommendation = async (req, res) => {
     const imageFile = req.file;
 
     const formDataToAI = new FormData();
-    formDataToAI.append("skin_type", skin_type || "");
-    formDataToAI.append("skin_subtype", skin_subtype || "");
-    formDataToAI.append("age_group", age_group || "");
-    formDataToAI.append("sensitivity", sensitivity || "Not Sensitive");
+    
+    // 🎯 VALIDASI KETAT BACKEND: Memastikan tidak ada string kosong "" yang dikirim ke FastAPI
+    formDataToAI.append("skin_type", skin_type && skin_type.trim() !== "" ? skin_type : "Normal");
+    formDataToAI.append("skin_subtype", skin_subtype && skin_subtype.trim() !== "" ? skin_subtype : "Normal to Dry");
+    formDataToAI.append("age_group", age_group && age_group.trim() !== "" ? age_group : "19-24");
+    formDataToAI.append("sensitivity", sensitivity && sensitivity.trim() !== "" ? sensitivity : "Not Sensitive");
 
     if (inputMethod === "manual") {
-      formDataToAI.append("manual_acne_type", manual_acne_type);
+      formDataToAI.append("manual_acne_type", manual_acne_type || "Comedonal");
     } else {
       if (!imageFile) {
         return res.status(400).json({
@@ -35,41 +40,79 @@ const getRecommendation = async (req, res) => {
       });
     }
 
-    // endpoint FastAPI
+    // Hit ke endpoint FastAPI Hugging Face
     const airesponse = await axios.post(
       "https://raihanrill-facehealth-api.hf.space/predict",
       formDataToAI,
       {
         headers: {
-         "Content-Type": formDataToAI.getHeaders()["content-type"],
+          "Content-Type": formDataToAI.getHeaders()["content-type"],
         },
       },
     );
 
-    // respon AI ke fe
-    return res.json({
-      success: true,
-      data: airesponse.data.data,
-    });     
-    
-  
-  } catch (error) {
-    // menampilkan pesan error dari FastAPI
-    if (error.response) {
-      console.error("Detail Error dari FastAPI:", error.response.data);
-    } else {
-      console.error("Error Recommendation Controller:", error.message);
+    // Pastikan struktur response dari FastAPI memiliki properti .data
+    const aiData = airesponse.data?.data || airesponse.data;
+
+    // Simpan ke database riwayat jika user terautentikasi
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+      try {
+        const token = req.headers.authorization.split(" ")[1];
+        const rahasiaJWT = process.env.JWT_SECRET || "kunci_rahasia_facehealth_id_2026";
+        const decoded = jwt.verify(token, rahasiaJWT);
+
+        let formattedConfidence = "-";
+        if (inputMethod !== "manual" && aiData?.deteksi_asli) {
+          const rawConfidence = aiData.deteksi_asli.confidence;
+          if (rawConfidence && !isNaN(parseFloat(rawConfidence))) {
+            formattedConfidence = `${(parseFloat(rawConfidence) * 100).toFixed(1)}%`;
+          }
+        }
+
+        const predictedClass = inputMethod === "manual" 
+          ? (manual_acne_type || "Comedonal") 
+          : (aiData?.deteksi_asli?.predicted_class || aiData?.predicted_class || "-");
+
+        await History.create({
+          user: decoded.id,
+          sumber_deteksi: inputMethod === "manual" ? "Manual Input" : "AI Gambar",
+          skin_type: skin_type || "-",
+          skin_subtype: skin_subtype || "-",
+          sensitivity: sensitivity || "-",
+          age: ageRaw ? `${ageRaw} Tahun` : "-",
+          kategori_tabular: aiData?.kategori_tabular || "-",
+          predicted_class: predictedClass,
+          confidence: formattedConfidence,
+          rekomendasi_skincare: typeof aiData?.rekomendasi_skincare === "object" 
+            ? JSON.stringify(aiData.rekomendasi_skincare) 
+            : (aiData?.rekomendasi_skincare || "-"),
+        });
+      } catch (historyErr) {
+        console.error("Gagal melakukan simpan otomatis riwayat:", historyErr.message);
+      }
     }
 
-    if (error.code === "ECONNREFUSED") {
-      return res.status(503).json({
-        success: false,
-        message: "Server AI (FastAPI) belum aktif!"
-      })
+    return res.json({
+      success: true,
+      data: aiData,
+    });
+
+  } catch (error) {
+    if (error.response) {
+      console.error("Detail Error dari FastAPI:", error.response.data);
+      // Jika yang kembali adalah object error skema FastAPI Pydantic, kirim dalam format string agar FE tidak crash
+      if (error.response.data && error.response.data.detail) {
+        const errorDetail = error.response.data.detail;
+        return res.status(400).json({
+          success: false,
+          message: typeof errorDetail === "object" ? "Format skema input parameter data tidak didukung oleh model AI." : errorDetail,
+        });
+      }
     }
-    res.status(500).json({
+    
+    return res.status(500).json({
       success: false,
-      message: "Terjadi kesalahan internal pada server AI.",
+      message: "Terjadi kesalahan internal pada server pemrosesan AI.",
     });
   }
 };

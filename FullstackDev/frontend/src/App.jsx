@@ -8,6 +8,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import AboutUs from './pages/AboutUs';
 import ProtectedRoute from './components/ProtectedRoute';
+import HistoryPage from './pages/analysis/HistoryPage';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/analysis" element={<AnalysisForm />} />
               <Route path="/result" element={<ResultPage />} />
+              <Route path="/history" element={<HistoryPage />} />
             </Route>
           </Routes>
         </main>

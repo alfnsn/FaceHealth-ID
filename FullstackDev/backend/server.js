@@ -5,6 +5,8 @@ const connectDB = require("./config/db");
 const recommendationRoutes = require("./routes/recommendationRoutes");
 const userRoutes = require("./routes/userRoutes");
 
+const historyRoutes = require("./routes/historyRoutes");
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
@@ -13,12 +15,41 @@ const app = express();
 
 connectDB();
 
+const allowedOrigins = [
+  "https://facehealth-id.vercel.app",
+  "http://localhost:5173",   
+  "http://localhost:3000",    
+  "http://127.0.0.1:5173"
+];
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization");
+  
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use(
   cors({
-    origin: "https://facehealth-id.vercel.app",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Ditolak oleh kebijakan CORS FaceHealth ID"));
+      }
+    },
     credentials: true,
   }),
 );
+
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -36,9 +67,9 @@ const swaggerOptions = {
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
 
-
 app.use("/api/users", userRoutes);
 app.use("/api/recommendations", recommendationRoutes);
+app.use("/api/history", historyRoutes);
 
 app.get("/", (req, res) => {
   res.send("Backend FaceHealt ID Berjalan...");
