@@ -166,6 +166,22 @@ Kedua model diekspos melalui REST API berbasis FastAPI yang di-deploy ke Hugging
 
 ### Dataset Klasifikasi Jerawat
 
+Model klasifikasi dilatih menggunakan dataset citra wajah yang terdiri dari 5 kategori jerawat.
+
+#### Mapping Dataset Gambar ke Kategori Rekomendasi
+
+| Label Gambar | Concern | Internal Type |
+|-------------|----------|---------------|
+| Blackheads | Acne | Comedonal |
+| Whiteheads | Acne | Comedonal |
+| Papules | Acne | Inflammatory |
+| Pustules | Acne | Inflammatory |
+| Cyst | Acne | Cystic |
+
+Mapping ini digunakan untuk menghubungkan hasil klasifikasi gambar dengan sistem rekomendasi skincare.
+
+#### Distribusi Dataset
+
 | Split | Blackheads | Cyst | Papules | Pustules | Whiteheads | Total |
 |-------|:---:|:---:|:---:|:---:|:---:|:---:|
 | Train | 735 | 645 | 621 | 584 | 193 | **2.778** |
@@ -275,10 +291,6 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 
 Server berjalan di `http://localhost:8000`.
 Dokumentasi API interaktif tersedia di `http://localhost:8000/docs`.
-
-### Deployment ke Hugging Face Space
-
-AI Server di-deploy ke [Hugging Face Space](https://huggingface.co/spaces) menggunakan Docker SDK. Pastikan file `Dockerfile` sudah tersedia di folder `AIEngineer/`.
 
 ### Endpoint AI Server
 
