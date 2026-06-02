@@ -3,19 +3,6 @@
 
 ---
 
-## Daftar Isi
-- [Tentang Proyek](#tentang-proyek)
-- [Fitur Utama](#fitur-utama)
-- [Struktur Repository](#struktur-repository)
-- [Tech Stack](#tech-stack)
-- [Arsitektur Sistem](#arsitektur-sistem)
-- [AI Engineer](#ai-engineer)
-- [Data Science](#data-science)
-- [Fullstack Developer](#fullstack-developer)
-- [Tim](#tim)
-
----
-
 ## Tentang Proyek
 
 **FaceHealth-ID**  merupakan platform berbasis kecerdasan buatan (AI) yang dirancang untuk membantu deteksi dini dan klasifikasi jenis jerawat melalui analisis foto wajah serta data gejala klinis pengguna.
