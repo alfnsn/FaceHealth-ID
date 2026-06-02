@@ -18,7 +18,6 @@ const getRecommendation = async (req, res) => {
 
     const formDataToAI = new FormData();
     
-    // 🎯 VALIDASI KETAT BACKEND: Memastikan tidak ada string kosong "" yang dikirim ke FastAPI
     formDataToAI.append("skin_type", skin_type && skin_type.trim() !== "" ? skin_type : "Normal");
     formDataToAI.append("skin_subtype", skin_subtype && skin_subtype.trim() !== "" ? skin_subtype : "Normal to Dry");
     formDataToAI.append("age_group", age_group && age_group.trim() !== "" ? age_group : "19-24");
@@ -40,7 +39,7 @@ const getRecommendation = async (req, res) => {
       });
     }
 
-    // Hit ke endpoint FastAPI Hugging Face
+    // AI
     const airesponse = await axios.post(
       "https://raihanrill-facehealth-api.hf.space/predict",
       formDataToAI,
@@ -51,7 +50,6 @@ const getRecommendation = async (req, res) => {
       },
     );
 
-    // Pastikan struktur response dari FastAPI memiliki properti .data
     const aiData = airesponse.data?.data || airesponse.data;
 
     // Simpan ke database riwayat jika user terautentikasi
