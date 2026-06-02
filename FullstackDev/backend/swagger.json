@@ -1,0 +1,72 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FaceHealth ID - API Documentation",
+    "version": "1.0.0",
+    "description": "Dokumentasi RESTful API resmi untuk aplikasi FaceHealth ID (Capstone 2026)",
+    "contact": {
+      "name": "Tim CC26-PSU048"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://facehealth-backend.vercel.app",
+      "description": "Server Produksi (Live)"
+    },
+    {
+      "url": "http://localhost:5001",
+      "description": "Server Lokal (Development)"
+    }
+  ],
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "summary": "Pendaftaran Akun Baru (Register)",
+        "description": "Membuat akun pengguna baru di dalam database FaceHealth ID.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "Shinta Feronica" },
+                  "email": { "type": "string", "example": "shinta@example.com" },
+                  "password": { "type": "string", "example": "password123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Akun berhasil dibuat secara sukses." },
+          "400": { "description": "Email sudah terdaftar atau format data salah." }
+        }
+      }
+    },
+    "/api/users/login": {
+      "post": {
+        "summary": "Autentikasi Masuk Pengguna (Login)",
+        "description": "Mengautentikasi pengguna dan mengembalikan token akses JWT.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "shinta@example.com" },
+                  "password": { "type": "string", "example": "password123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Berhasil masuk ke sistem." },
+          "401": { "description": "Email atau password salah." }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,2 @@
+Model terpilih (resnet50_finetuned_best.keras) tidak dapat diupload di github (ukuran terlalu besar). model bisa didownload pada link berikut ini: 
+[LINK MODEL](https://drive.google.com/file/d/1DSMon-uokPxLGMoYXI1w_bgy-T16mb4r/view?usp=sharing)
