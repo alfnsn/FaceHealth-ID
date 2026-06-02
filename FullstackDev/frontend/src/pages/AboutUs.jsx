@@ -75,14 +75,12 @@ const AboutUs = () => {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 
-                {/* 1. HERO HEADER SECTION */}
                 <motion.div
                     className="text-center max-w-4xl mx-auto mb-16"
                     initial={{ opacity: 0, y: -30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    {/* Lencana Kucing Maskot yang Berdenyut Lembut */}
                     <motion.div
                         className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/80 backdrop-blur-sm rounded-full shadow-lg mb-6 border border-emerald-100/50"
                         animate={{ scale: [1, 1.05, 1] }}
