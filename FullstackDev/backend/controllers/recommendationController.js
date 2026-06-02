@@ -100,7 +100,6 @@ const getRecommendation = async (req, res) => {
   } catch (error) {
     if (error.response) {
       console.error("Detail Error dari FastAPI:", error.response.data);
-      // Jika yang kembali adalah object error skema FastAPI Pydantic, kirim dalam format string agar FE tidak crash
       if (error.response.data && error.response.data.detail) {
         const errorDetail = error.response.data.detail;
         return res.status(400).json({
