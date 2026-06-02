@@ -81,9 +81,13 @@ FaceHealth-ID/
 │   │   ├── controllers/
 │   │   │   ├── recommendationController.js
 │   │   │   └── userController.js
+│   │   ├── middleware/
+│   │   │   └── authMiddleware.js
 │   │   ├── models/
+│   │   │   └── History.js          
 │   │   │   └── User.js             # Schema user MongoDB
 │   │   ├── routes/
+│   │   │   ├── historyRoutes.js
 │   │   │   ├── recommendationRoutes.js
 │   │   │   └── userRoutes.js
 │   │   ├── server.js               # Entry point backend
@@ -100,6 +104,7 @@ FaceHealth-ID/
 │       │   ├── styles/
 │       │   ├── App.jsx
 │       │   └── main.jsx
+│       ├── .eslint.config.js
 │       ├── index.html
 │       ├── tailwind.config.js
 │       ├── vite.config.js
