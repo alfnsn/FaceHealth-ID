@@ -159,8 +159,8 @@ FaceHealth-ID/
 
 ### Tentang
 Membangun dan melatih dua model untuk AI Server:
-1. **Model Klasifikasi Jerawat** — Deep Learning (ResNet50 Fine-Tuned) untuk mengidentifikasi jenis jerawat dari foto wajah.
-2. **Model Rekomendasi Skincare** — Rule-Based + Random Forest untuk merekomendasikan paket perawatan berdasarkan profil kulit pengguna.
+1. **Model Klasifikasi Jerawat**, Model Deep Learning (ResNet50 Fine-Tuned) untuk mengidentifikasi jenis jerawat dari foto wajah.
+2. **Model Rekomendasi Skincare**, Model Rule-Based + Random Forest untuk merekomendasikan paket perawatan berdasarkan profil kulit pengguna.
 
 Kedua model diekspos melalui REST API berbasis FastAPI yang di-deploy ke Hugging Face Space.
 
@@ -285,28 +285,6 @@ AI Server di-deploy ke [Hugging Face Space](https://huggingface.co/spaces) mengg
 #### POST `/predict` — Klasifikasi Jerawat
 Upload foto wajah untuk mendapatkan prediksi jenis jerawat.
 
-**Request:** `multipart/form-data`
-```
-file: <image_file>
-```
-
-**Response:**
-```json
-{
-  "predicted_class": "Cyst",
-  "confidence": 0.9637,
-  "all_probabilities": {
-    "Blackheads": 0.0017,
-    "Cyst": 0.9637,
-    "Papules": 0.0001,
-    "Pustules": 0.0335,
-    "Whiteheads": 0.0010
-  }
-}
-```
-
-#### POST `/recommend` — Rekomendasi Skincare
-Dapatkan rekomendasi paket perawatan berdasarkan profil kulit dan jenis jerawat.
 
 **Nilai yang valid:**
 
